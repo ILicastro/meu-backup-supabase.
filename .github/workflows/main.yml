@@ -16,11 +16,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
-      # Executa o pg_dump, forçando o nome de usuário para máxima clareza
+      # Executa o pg_dump com usuário e senha diretamente na URL
       - name: Run pg_dump
         run: |
-          export PGPASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}"
-          pg_dump -U "postgres.bocshdnwowoobaaxylir" "postgresql://aws-1-sa-east-1.pooler.supabase.com:5432/postgres" > backup_barbearia.sql
+          pg_dump "postgresql://postgres.bocshdnwowoobaaxylir:${{ secrets.SUPABASE_DB_PASSWORD }}@aws-1-sa-east-1.pooler.supabase.com:5432/postgres" > backup_barbearia.sql
         
       # Disponibiliza o arquivo gerado para download
       - name: Upload backup artifact
