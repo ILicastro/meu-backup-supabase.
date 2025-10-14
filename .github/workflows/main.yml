@@ -21,10 +21,10 @@ jobs:
         run: |
           export PGPASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}"
           pg_dump "postgresql://postgres@db.bocshdnwowoobaaxylir.supabase.co:5432/postgres" > backup_barbearia.sql
-
-      # Disponibiliza o arquivo gerado para download
+        
+      # Disponibiliza o arquivo gerado para download (VERSÃO CORRIGIDA AQUI)
       - name: Upload backup artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # <<< A CORREÇÃO FOI FEITA NESTA LINHA
         with:
           name: backup-sql
           path: backup_barbearia.sql
