@@ -1,0 +1,30 @@
+# Nome do Workflow
+name: Backup Banco de Dados Supabase
+
+# Permite que você rode este workflow manualmente pela aba Actions
+on:
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Instala o cliente do PostgreSQL (que inclui o pg_dump)
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      # Executa o pg_dump usando a senha guardada no Secret
+      - name: Run pg_dump
+        run: |
+          export PGPASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}"
+          pg_dump "postgresql://postgres@db.bocshdnwowoobaaxylir.supabase.co:5432/postgres" > backup_barbearia.sql
+
+      # Disponibiliza o arquivo gerado para download
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backup-sql
+          path: backup_barbearia.sql
