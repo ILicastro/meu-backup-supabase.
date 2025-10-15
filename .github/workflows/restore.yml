@@ -1,0 +1,29 @@
+# Nome do Workflow
+name: Restaurar Banco de Dados Supabase
+
+# Permite que você rode este workflow manualmente pela aba Actions
+on:
+  workflow_dispatch:
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o artefato (arquivo de backup) da execução anterior
+      - name: Download backup artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backup-sql # O nome que demos ao nosso backup
+
+      # 2. Instala o PostgreSQL v17 para ter o psql
+      - name: Set up PostgreSQL client v17
+        uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: '17'
+
+      # 3. Restaura o backup no banco de homologação
+      - name: Run psql restore
+        run: |
+          export PGPASSWORD="${{ secrets.HOMOLOG_DB_PASSWORD }}"
+          psql "postgresql://postgres@db.mezbqoijpbabmcyhtlvm.supabase.co:5432/postgres" < backup_barbearia.sql
