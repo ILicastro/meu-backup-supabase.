@@ -28,7 +28,6 @@ jobs:
 
   # --- TRABALHO 2: RESTAURAR O BACKUP ---
   restore:
-    # Esta linha garante que a restauração SÓ aconteça DEPOIS que o backup terminar com sucesso.
     needs: backup
     runs-on: ubuntu-latest
     steps:
@@ -45,4 +44,5 @@ jobs:
       - name: Run psql restore
         run: |
           export PGPASSWORD="${{ secrets.HOMOLOG_DB_PASSWORD }}"
-          psql "postgresql://postgres@db.mezbqoijpbabmcyhtlvm.supabase.co:5432/postgres" < backup_barbearia.sql
+          # <<< CORREÇÃO FINAL E DEFINITIVA AQUI >>>
+          psql "postgresql://postgres.mezbqoijpbabmcyhtlvm@aws-1-sa-east-1.pooler.supabase.com:5432/postgres" < backup_barbearia.sql
