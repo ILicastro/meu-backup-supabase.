@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Usa uma Action especialista para instalar o PostgreSQL v17.
+      # Usa a Action especialista CORRETA para instalar o PostgreSQL v17.
       - name: Set up PostgreSQL client v17
-        uses: postgresql-actions/setup-postgresql@v1
+        uses: ankane/setup-postgres@v1
         with:
           version: '17'
 
