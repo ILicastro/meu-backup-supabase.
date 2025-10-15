@@ -10,11 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Baixa o artefato (arquivo de backup) da execução anterior
+      # 1. Baixa o artefato da última execução bem-sucedida do workflow de Backup
       - name: Download backup artifact
         uses: actions/download-artifact@v4
         with:
-          name: backup-sql # O nome que demos ao nosso backup
+          name: backup-sql
+          # --- Adições importantes abaixo ---
+          workflow: main.yml             # Nome do arquivo do workflow que criou o backup
+          workflow_conclusion: success    # Apenas de execuções que deram certo
+          branch: main                    # Na branch 'main'
 
       # 2. Instala o PostgreSQL v17 para ter o psql
       - name: Set up PostgreSQL client v17
