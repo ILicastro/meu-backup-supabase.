@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Usa a Action especialista CORRETA para instalar o PostgreSQL v17.
+      # Usa a Action especialista com o NOME CORRETO DO PARÂMETRO
       - name: Set up PostgreSQL client v17
         uses: ankane/setup-postgres@v1
         with:
-          version: '17'
+          postgres-version: '17' # <<< A CORREÇÃO FINAL FOI FEITA AQUI
 
       # Executa o pg_dump. Agora ele terá a versão 17.
       - name: Run pg_dump
