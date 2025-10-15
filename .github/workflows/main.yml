@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Instala o cliente do PostgreSQL (que inclui o pg_dump)
+      # Instala a versão 17 do cliente PostgreSQL para bater com a do servidor
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
+          sudo apt-get install -y postgresql-client-17 # <<< A CORREÇÃO FOI FEITA NESTA LINHA
+        
       # Executa o pg_dump usando PGPASSWORD para a senha (método mais robusto)
       - name: Run pg_dump
         run: |
