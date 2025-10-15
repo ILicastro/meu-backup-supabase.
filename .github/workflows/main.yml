@@ -1,30 +1,48 @@
 # Nome do Workflow
-name: Backup Banco de Dados Supabase
+name: Clonar Banco de Dados Supabase
 
 # Permite que você rode este workflow manualmente pela aba Actions
 on:
   workflow_dispatch:
 
 jobs:
+  # --- TRABALHO 1: FAZER O BACKUP ---
   backup:
     runs-on: ubuntu-latest
-
     steps:
-      # Usa a Action especialista com o NOME CORRETO DO PARÂMETRO
       - name: Set up PostgreSQL client v17
         uses: ankane/setup-postgres@v1
         with:
-          postgres-version: '17' # <<< A CORREÇÃO FINAL FOI FEITA AQUI
+          postgres-version: '17'
 
-      # Executa o pg_dump. Agora ele terá a versão 17.
       - name: Run pg_dump
         run: |
           export PGPASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}"
           pg_dump "postgresql://postgres.bocshdnwowoobaaxylir@aws-1-sa-east-1.pooler.supabase.com:5432/postgres" > backup_barbearia.sql
         
-      # Disponibiliza o arquivo gerado para download
       - name: Upload backup artifact
         uses: actions/upload-artifact@v4
         with:
           name: backup-sql
           path: backup_barbearia.sql
+
+  # --- TRABALHO 2: RESTAURAR O BACKUP ---
+  restore:
+    # Esta linha garante que a restauração SÓ aconteça DEPOIS que o backup terminar com sucesso.
+    needs: backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download backup artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backup-sql
+
+      - name: Set up PostgreSQL client v17
+        uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: '17'
+
+      - name: Run psql restore
+        run: |
+          export PGPASSWORD="${{ secrets.HOMOLOG_DB_PASSWORD }}"
+          psql "postgresql://postgres@db.mezbqoijpbabmcyhtlvm.supabase.co:5432/postgres" < backup_barbearia.sql
