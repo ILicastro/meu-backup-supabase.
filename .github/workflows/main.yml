@@ -5,13 +5,12 @@ name: Backup Banco de Dados Supabase
 on:
   workflow_dispatch:
 
-jobs F:
+jobs:
   backup:
     runs-on: ubuntu-latest
 
     steps:
       # Usa uma Action especialista para instalar o PostgreSQL v17.
-      # Esta é a forma mais robusta e garantida.
       - name: Set up PostgreSQL client v17
         uses: postgresql-actions/setup-postgresql@v1
         with:
