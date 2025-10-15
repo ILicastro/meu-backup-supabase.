@@ -10,13 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Instala a versão 17 do cliente PostgreSQL para bater com a do servidor
-      - name: Install PostgreSQL client
+      # Configura o repositório oficial do PostgreSQL e instala o client v17
+      - name: Install PostgreSQL client v17
         run: |
+          # 1. Adiciona o repositório oficial do PostgreSQL à lista de fontes
           sudo apt-get update
-          sudo apt-get install -y postgresql-client-17 # <<< A CORREÇÃO FOI FEITA NESTA LINHA
-        
-      # Executa o pg_dump usando PGPASSWORD para a senha (método mais robusto)
+          sudo apt-get install -y curl ca-certificates gnupg
+          sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          
+          # 2. Adiciona a chave de segurança do repositório
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg
+
+          # 3. Atualiza a lista de pacotes novamente para incluir os do novo repositório
+          sudo apt-get update
+          
+          # 4. Agora instala o client v17, que será encontrado
+          sudo apt-get install -y postgresql-client-17
+
+      # Executa o pg_dump usando PGPASSWORD para a senha
       - name: Run pg_dump
         run: |
           export PGPASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}"
